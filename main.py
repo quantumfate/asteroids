@@ -24,11 +24,21 @@ def main():
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
 
-    Player.containers = (updatable, drawable)
-    Asteroid.containers = (asteroids, updatable, drawable)
-    AsteroidField.containers = updatable
-    Shot.containers = (shots, drawable, updatable)
-
+    Player.containers = (  # pyright: ignore[reportAttributeAccessIssue]
+        updatable,
+        drawable,
+    )
+    Asteroid.containers = (  # pyright: ignore[reportAttributeAccessIssue]
+        asteroids,
+        updatable,
+        drawable,
+    )
+    AsteroidField.containers = updatable  # pyright: ignore[reportAttributeAccessIssue]
+    Shot.containers = (  # pyright: ignore[reportAttributeAccessIssue]
+        shots,
+        drawable,
+        updatable,
+    )
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
     while True:
@@ -45,6 +55,12 @@ def main():
                 log_event("player_hit")
                 print("Game over!")
                 sys.exit()
+
+            for shot in shots:
+                if shot.collides_with(asteroid):
+                    log_event("asteroid_shot")
+                    asteroid.split()
+                    shot.kill()
 
         for draw in drawable:
             draw.draw(screen)
